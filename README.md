@@ -22,3 +22,9 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+-----------------------------------------------------------
+
+run following command for tailwing.css :
+
+rake assets:precompile
