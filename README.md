@@ -28,3 +28,8 @@ Things you may want to cover:
 run following command for tailwing.css :
 
 rake assets:precompile
+
+
+and run this to install flatpicker :
+
+npm install flatpicker
