@@ -4,12 +4,24 @@
 
 <%= form_for @user do |f| %>
   <div>
+    <%= f.label :first_name %>
+    <%= f.text_field :first_name, autofocus: true %>
+  </div>
+  <div>
+    <%= f.label :last_name %>
+    <%= f.text_field :last_name, autofocus: true %>
+  </div>
+  <div>
     <%= f.label :username %>
     <%= f.text_field :username, autofocus: true %>
   </div>
   <div>
     <%= f.label :email %>
     <%= f.text_field :email %>
+  </div>
+  <div class="field">
+    <%= form.label :date_of_birth %>
+    <%= form.text_field :date_of_birth %>
   </div>
 
   <div>
@@ -24,5 +36,5 @@
     <%= f.submit "Sign up!" %>
   </div>
 <% end %>
-  
+
 <%# ----- end of added lines ----- %>
