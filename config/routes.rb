@@ -4,12 +4,14 @@ Rails.application.routes.draw do
   get 'users/new', to: 'users#new', as: :new_user
   post 'users', to: 'users#create'
   get '/users/dashboard', to: 'users#dashboard'
-
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
+
   resources :categories
   resources :teams
   resources :members
   resources :roles
+  resources :country
+  resources :city
 end

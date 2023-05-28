@@ -71,3 +71,5 @@ gem "tailwindcss-rails", "~> 2.0"
 
 gem "foreman", "~> 0.87.2"
 gem 'phonelib'
+gem 'net-http'
+gem 'json'
