@@ -2,50 +2,51 @@
 
 <h1>Sign Up</h1>
 
-<%= form_for @user do |f| %>
+<%= form_for @user do |form| %>
   <div>
-    <%= f.label :first_name %>
-    <%= f.text_field :first_name, autofocus: true %>
+    <%= form.label :first_name %>
+    <%= form.text_field :first_name, autofocus: true %>
   </div>
   <div>
-    <%= f.label :last_name %>
-    <%= f.text_field :last_name %>
+    <%= form.label :last_name %>
+    <%= form.text_field :last_name %>
   </div>
   <div>
-    <%= f.label :username %>
-    <%= f.text_field :username %>
+    <%= form.label :username %>
+    <%= form.text_field :username %>
   </div>
   <div>
-    <%= f.label :email %>
-    <%= f.text_field :email %>
+    <%= form.label :email %>
+    <%= form.text_field :email %>
   </div>
   <div class="field">
     <%= form.label :date_of_birth %>
     <%= form.text_field :date_of_birth %>
   </div>
 
-  <%= f.label :country_id, 'Country' %>
-  <%= f.collection_select :country_id, Country.all, :id, :name, prompt: 'Select a country' %>
+  <%= form.label :country_id, 'Country' %>
+  <%= form.collection_select :country_id, Country.all, :id, :name, prompt: 'Select a country' %>
 
-  <%= f.label :phone_number, 'Phone Number' %>
-  <% selected_country = Country.find(params[:user][:country_id]) if params[:user] && params[:user][:country_id].present? %>
-  <% if selected_country %>
-    <% phone_format = selected_country.phone_number_format %>
-    <%= f.text_field :phone_number, value: Phonelib.parse(f.object.phone_number, phone_format.country.phone_code).full_e164, placeholder: phone_format.format %>
+  <%= form.label :phone_number, 'Phone Number' %>
+  <% if @user.country %>
+    <% phone_code = @user.country.phone_code %>
+    <% phone_format = Phonelib.parse('', phone_code).national.split(' ').join('-') %>
+
+    <%= form.text_field :phone_number, value: Phonelib.parse(f.object.phone_number, phone_code).full_e164, placeholder: phone_format %>
   <% else %>
-    <%= f.text_field :phone_number %>
+    <%= form.text_field :phone_number %>
   <% end %>
 
   <div>
-    <%= f.label :password %>
-    <%= f.password_field :password %>
+    <%= form.label :password %>
+    <%= form.password_field :password %>
   </div>
   <div>
-    <%= f.label :password_confirmation %>
-    <%= f.password_field :password_confirmation %>
+    <%= form.label :password_confirmation %>
+    <%= form.password_field :password_confirmation %>
   </div>
   <div>
-    <%= f.submit "Sign up!" %>
+    <%= form.submit "Sign up!" %>
   </div>
 <% end %>
 

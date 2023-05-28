@@ -12,10 +12,9 @@ class User < ApplicationRecord
 
   belongs_to :role, class_name: 'Role'
   belongs_to :city
-  belongs_to :country, through: :city
+  has_one :country, through: :city
   has_one :phone_number
 
-  validates :password, length: { minimum: 6 }, if: -> { password.present? }s
   def full_name
     "#{first_name} #{last_name}"
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_27_181101) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_28_063552) do
   create_table "accesses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "route"
     t.datetime "created_at", null: false
@@ -80,22 +80,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_27_181101) do
     t.index ["user_id"], name: "index_members_on_user_id"
   end
 
-  create_table "phone_number_formats", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "area_code"
-    t.bigint "country_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "local_number"
-    t.index ["country_id"], name: "index_phone_number_formats_on_country_id"
-  end
-
   create_table "phone_numbers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "number"
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "phone_number_format_id", null: false
-    t.index ["phone_number_format_id"], name: "index_phone_numbers_on_phone_number_format_id"
+    t.bigint "country_id", null: false
+    t.index ["country_id"], name: "index_phone_numbers_on_country_id"
     t.index ["user_id"], name: "index_phone_numbers_on_user_id"
   end
 
@@ -150,8 +141,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_27_181101) do
   add_foreign_key "members", "roles", column: "team_role_id"
   add_foreign_key "members", "teams"
   add_foreign_key "members", "users"
-  add_foreign_key "phone_number_formats", "countries"
-  add_foreign_key "phone_numbers", "phone_number_formats"
+  add_foreign_key "phone_numbers", "countries"
   add_foreign_key "phone_numbers", "users"
   add_foreign_key "role_accesses", "accesses"
   add_foreign_key "role_accesses", "roles"
