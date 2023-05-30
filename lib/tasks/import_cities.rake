@@ -5,7 +5,7 @@ namespace :import_cities do
   desc 'Import cities from JSON'
   task cities: :environment do
     # ENV variable is needed
-    json_file = File.read('/home/alirezash/Projects/TeamAct/lib/tasks/cities.json')
+    json_file = File.read('/home/ariana/myProjects/TeamAct/lib/tasks/cities.json')
     data = JSON.parse(json_file)
 
     i = 0

@@ -14,42 +14,160 @@
   <div>
     <%= form.label :username %>
     <%= form.text_field :username %>
+    <span id="username-message"></span>
   </div>
   <div>
     <%= form.label :email %>
-    <%= form.text_field :email %>
+    <%= form.text_field :email,pattern: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', required: true %>
+    <span class="error-message">Please enter a valid email address.</span>
   </div>
   <div class="field">
     <%= form.label :date_of_birth %>
-    <%= form.text_field :date_of_birth %>
+    <%= form.text_field :date_of_birth, id: 'datepicker' %>
   </div>
 
   <div>
     <%= form.label :country_id, 'Country' %>
-    <%= form.collection_select :country_id, Country.all.order(:name), :id, :name, prompt: 'Select a country' %>
-
+    <%= form.collection_select :country_id, Country.all.order(:name), :id, :name, { prompt: 'Select a country' }, id: 'country-select' %>
+  </div>
+  <div>
+    <%= form.label :city_id, 'City' %>
+    <%= form.collection_select :city_id, [], :id, :name, { prompt: 'Select a city' }, id: 'city-select' %>
+  </div>
+  <div>
     <%= form.label :phone_number, 'Phone Number' %>
-    <% if @user.country %>
-      <% phone_code = @user.country.phone_code %>
-      <% phone_format = Phonelib.parse('', phone_code).national.split(' ').join('-') %>
-
-      <%= form.text_field :phone_number, value: Phonelib.parse(f.object.phone_number, phone_code).full_e164, placeholder: phone_format %>
-    <% else %>
-      <%= form.text_field :phone_number %>
-    <% end %>
+    <div class="phone-number-field">
+      <%= form.text_field :phone_number_country_code, placeholder: 'Country Code', id: 'phone-country-code' %>
+      <%= form.text_field :phone_number_digits, placeholder: 'Phone Number', id: 'phone-number-digits' %>
+    </div>
   </div>
 
   <div>
     <%= form.label :password %>
-    <%= form.password_field :password %>
+    <%= form.password_field :password, id: 'password-input' %>
   </div>
   <div>
-    <%= form.label :password_confirmation %>
-    <%= form.password_field :password_confirmation %>
+    <%= form.label :password_confirmation, 'Confirm Password' %>
+    <%= form.password_field :password_confirmation, id: 'password-confirmation-input' %>
+    <span id="password-confirmation-message"></span>
   </div>
   <div>
-    <%= form.submit "Sign up!" %>
+    <%= form.submit "Sign up!", class: 'signup-button' %>
   </div>
 <% end %>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  // Username live check
+  $('#username-input').on('input', function() {
+    var username = $(this).val();
+    if (username.length > 0) {
+      $.ajax({
+        url: '/users/check_username_availability',
+        method: 'GET',
+        data: { username: username },
+        dataType: 'json',
+        success: function(response) {
+          $('#username-message').text(response.message);
+        }
+      });
+    } else {
+      $('#username-message').empty();
+    }
+  });
 
+  // Password confirmation live check
+  $('#password-confirmation-input').on('input', function() {
+    var password = $('#password-input').val();
+    var confirmation = $(this).val();
+    if (password !== confirmation) {
+      $('#password-confirmation-message').text('Password confirmation does not match.');
+    } else {
+      $('#password-confirmation-message').empty();
+    }
+  });
+
+  // Date picker
+  $('#datepicker').datepicker();
+
+  function updatePhoneNumberFields() {
+    var countryId = $('#country-select').val();
+    if (countryId) {
+      $.ajax({
+        url: '/countries/' + countryId, // Replace with your countries controller route
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          $('#phone-country-code').val(response.phone_code);
+          // $('#phone-number-digits').attr('placeholder', response.phone_number_format);
+        }
+      });
+    } else {
+      $('#phone-country-code').val('');
+      // $('#phone-number-digits').attr('placeholder', 'Phone Number');
+    }
+  }
+  function updateCitySelect() {
+    var countryId = $('#country-select').val();
+    console.log("countryId : " ,countryId)
+    if (countryId) {
+      $.ajax({
+        url: '/countries/' + countryId + '/cities', // Replace with your cities controller route
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          console.log("response : ", response)
+          var options = '<option value="">Select a city</option>';
+          if (response.length > 0) {
+            response.forEach(function(city) {
+              options += '<option value="' + city.id + '">' + city.name + '</option>';
+            });
+          } else {
+            options += '<option value="" disabled>No cities available</option>';
+          }
+          $('#city-select').html(options);
+        }
+      });
+    } else {
+      $('#city-select').html('<option value="">Select a city</option>');
+    }
+  }
+  // Event listener for country select change
+  $('#country-select').on('change', function() {
+    updatePhoneNumberFields();
+    updateCitySelect();
+  });
+
+  // Initial update of phone number fields and city select on page load
+  updatePhoneNumberFields();
+  updateCitySelect();
+</script>
+<style>
+  /* Add your custom CSS styles here */
+
+  .error-message {
+    color: red;
+    font-size: 12px;
+  }
+
+  .signup-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .phone-number-field {
+    display: flex;
+    align-items: center;
+  }
+
+  .phone-number-field input {
+    margin-right: 10px;
+    width: 100px;
+  }
+</style>
 <%# ----- end of added lines ----- %>

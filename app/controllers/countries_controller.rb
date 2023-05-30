@@ -1,12 +1,16 @@
 class CountriesController < ApplicationController
-  before_action :authorize, only: [:show, :edit, :update, :destroy]
+  # before_action :authorize, only: [:show, :edit, :update, :destroy]
 
   def index
     @countries = Country.all
   end
 
   def show
-    @cities = @country.cities
+    @country = Country.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.json { render json: @country }
+    end
   end
 
   def new
@@ -36,6 +40,15 @@ class CountriesController < ApplicationController
   def destroy
     @country.destroy
     redirect_to countries_path, notice: 'Country was successfully destroyed.'
+  end
+
+  def cities
+    country = Country.find(params[:id])
+    @cities = country.cities.order(:name)
+    respond_to do |format|
+      format.html
+      format.json { render json: @cities }
+    end
   end
 
   private

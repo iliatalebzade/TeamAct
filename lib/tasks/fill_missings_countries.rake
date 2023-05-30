@@ -5,7 +5,7 @@ namespace :fill_missings_countries do
   desc 'Add alpha2Code to Countries'
   task :countries => :environment do
     # ENV variable is needed
-    apikey = "oKow9mkcsLaNZvQMjJVdV6VnUJAzrPBYMZuSquV3"
+    apikey = "xUQECyYMFyjvhgnjMIHTx4qo2HyeNsjnZCGaapxJ"
 
     # Fetch country data
     country_url = "https://countryapi.io/api/all?apikey=#{apikey}"
@@ -38,7 +38,7 @@ namespace :fill_missings_countries do
         end
       end
     end
-    json_file = File.read('/home/alirezash/Projects/TeamAct/lib/tasks/countries.json')
+    json_file = File.read('/home/ariana/myProjects/TeamAct/lib/tasks/countries.json')
     data = JSON.parse(json_file)
 
     i = 0

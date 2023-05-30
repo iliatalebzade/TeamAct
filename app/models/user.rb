@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  attr_accessor :phone_number_country_code, :phone_number_digits
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :username, presence: true, length: { maximum: 50 }
   validates :first_name, presence: true, length: { maximum: 50 }

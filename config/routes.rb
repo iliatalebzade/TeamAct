@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :teams
   resources :members
   resources :roles
-  resources :countries
-  resources :city
+  resources :countries do
+    get 'cities', on: :member
+  end
 end
