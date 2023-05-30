@@ -2,32 +2,34 @@ require 'net/http'
 require 'json'
 
 namespace :import_cities do
-  desc 'Import cities from RapidAPI and populate the database'
+  desc 'Import cities from JSON'
   task cities: :environment do
     # ENV variable is needed
-    url = URI(" https://www.universal-tutorial.com/api/states/United States")
+    json_file = File.read('/home/alirezash/Projects/TeamAct/lib/tasks/cities.json')
+    data = JSON.parse(json_file)
 
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-
-    request = Net::HTTP::Get.new(url)
-    request["Authorization"] = "yqNZl0GLev-ecjb0Yl7qvY35lVxi1iDsrEZp8HYviaLxWQRVQMBl6PCymwqtfx5tcr0"
-
-    response = http.request(request)
-    puts response
-
-    cities_data = JSON.parse(response)
-    puts cities_data
-    # Iterate over cities data and create city records
-    cities_data.each do |city_data|
-      if country.name == "Iran"
-        puts city_data['name']
+    i = 0
+    missings = []
+    data.each do |record|
+      i += 1
+      puts i
+      country = Country.find_by(iso2: record['country_code']) || Country.find_by(iso3: record['country_code'])
+      if country.nil?
+        puts "there is no country #{record['country_code']}"
+        next
       end
-      # city = City.new(name: city_data['name'])
-      # city.country = country
-      # city.save
+      city = City.new(name: record['name'])
+      city.country = country
+      city.latitude = record['latitude']
+      city.longitude = record['longitude']
+
+      result = city.save
+      puts result
+      unless result
+        puts city.errors.full_messages
+      end
     end
 
-    puts "Imported cities for #{country.name}"
+    puts "Database populated successfully!"
   end
 end

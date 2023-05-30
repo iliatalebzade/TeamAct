@@ -1,0 +1,46 @@
+<h1>Countries</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Alpha2 Code</th>
+      <th>Alpha3 Code</th>
+      <th>Region</th>
+      <th>Phone Code</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+      <th>Flag</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @countries.order(:name).each do |country| %>
+      <tr>
+        <td><%= country.name %></td>
+        <td><%= country.iso2 %></td>
+        <td><%= country.iso3 %></td>
+        <td><%= country.region %></td>
+        <td><%= country.phone_code %></td>
+        <td><%= country.latitude %></td>
+        <td><%= country.longitude %></td>
+        <td>
+            <% if country.flag.attached? %>
+                <%= image_tag country.flag %>
+            <% else %>
+                <p> no flag </p>
+            <% end %>
+        </td>
+        <td>
+          <%= link_to "Show Cities", country_path(country) %>
+          <%= link_to "Edit", edit_country_path(country) %>
+          <%= link_to "Delete", country_path(country), method: :delete, data: { confirm: "Are you sure you want to delete this country?" } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to "New Country", new_country_path %>

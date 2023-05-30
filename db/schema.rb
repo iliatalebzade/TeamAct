@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_28_163404) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_29_194019) do
   create_table "accesses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "route"
     t.datetime "created_at", null: false
@@ -58,19 +58,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_28_163404) do
     t.bigint "country_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "latitude", null: false
+    t.float "longitude", null: false
     t.index ["country_id"], name: "index_cities_on_country_id"
   end
 
   create_table "countries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "name"
-    t.string "alpha3_code"
-    t.string "phone_code"
+    t.string "name", null: false
+    t.string "iso3", null: false
+    t.string "phone_code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "region"
-    t.float "latitude"
-    t.float "longitude"
-    t.string "alpha2_code", null: false
+    t.string "region", null: false
+    t.float "latitude", null: false
+    t.float "longitude", null: false
+    t.string "iso2", null: false
+    t.string "emoji", null: false
   end
 
   create_table "members", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

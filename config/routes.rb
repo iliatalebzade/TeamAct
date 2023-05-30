@@ -12,6 +12,6 @@ Rails.application.routes.draw do
   resources :teams
   resources :members
   resources :roles
-  resources :country
+  resources :countries
   resources :city
 end

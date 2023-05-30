@@ -1,0 +1,14 @@
+<h1><%= @country.name %></h1>
+
+<p><strong>Alpha2 Code:</strong> <%= @country.iso2 %></p>
+<p><strong>Alpha3 Code:</strong> <%= @country.iso3 %></p>
+<p><strong>Region:</strong> <%= @country.region %></p>
+<p><strong>Phone Code:</strong> <%= @country.phone_code %></p>
+<p><strong>Latitude:</strong> <%= @country.latitude %></p>
+<p><strong>Longitude:</strong> <%= @country.longitude %></p>
+<p><strong>Flag:</strong></p>
+<%= image_tag @country.flag %>
+
+<br>
+
+<%= link_to "Back to Countries", countries_path %>

@@ -24,18 +24,20 @@
     <%= form.text_field :date_of_birth %>
   </div>
 
-  <%= form.label :country_id, 'Country' %>
-  <%= form.collection_select :country_id, Country.all, :id, :name, prompt: 'Select a country' %>
+  <div>
+    <%= form.label :country_id, 'Country' %>
+    <%= form.collection_select :country_id, Country.all.order(:name), :id, :name, prompt: 'Select a country' %>
 
-  <%= form.label :phone_number, 'Phone Number' %>
-  <% if @user.country %>
-    <% phone_code = @user.country.phone_code %>
-    <% phone_format = Phonelib.parse('', phone_code).national.split(' ').join('-') %>
+    <%= form.label :phone_number, 'Phone Number' %>
+    <% if @user.country %>
+      <% phone_code = @user.country.phone_code %>
+      <% phone_format = Phonelib.parse('', phone_code).national.split(' ').join('-') %>
 
-    <%= form.text_field :phone_number, value: Phonelib.parse(f.object.phone_number, phone_code).full_e164, placeholder: phone_format %>
-  <% else %>
-    <%= form.text_field :phone_number %>
-  <% end %>
+      <%= form.text_field :phone_number, value: Phonelib.parse(f.object.phone_number, phone_code).full_e164, placeholder: phone_format %>
+    <% else %>
+      <%= form.text_field :phone_number %>
+    <% end %>
+  </div>
 
   <div>
     <%= form.label :password %>
