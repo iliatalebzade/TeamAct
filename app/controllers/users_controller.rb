@@ -17,9 +17,9 @@ class UsersController < ApplicationController
   end
 
   def create
+    byebug
     @user = User.new(user_params)
     @user.phone_number = "#{params[:user][:phone_number_country_code]}#{params[:user][:phone_number_digits]}"
-
     # store all emails in lowercase to avoid duplicates and case-sensitive login errors:
     @user.email.downcase!
 
@@ -51,6 +51,11 @@ class UsersController < ApplicationController
   end
 
   def dashboard
+  end
+
+  def check_username_availability
+    user = User.find_by(username: params[:username])
+    render json: {avaiable: user.present?}
   end
 
 private

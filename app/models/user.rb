@@ -1,7 +1,8 @@
 class User < ApplicationRecord
   attr_accessor :phone_number_country_code, :phone_number_digits
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :username, presence: true, length: { maximum: 50 }
+  validates :username, presence: true, length: { maximum: 50 },
+    format: { with: /\A[a-zA-Z0-9!@#$%^&*_+=\\-\\.?><()]+\z/, message: "can only contain letters, numbers, and special characters" }
   validates :first_name, presence: true, length: { maximum: 50 }
   validates :last_name, presence: true, length: { maximum: 50 }
   validates :date_of_birth, presence: true
@@ -15,6 +16,7 @@ class User < ApplicationRecord
   belongs_to :city
   has_one :country, through: :city
   has_one :phone_number
+  has_many :addresses
 
   def full_name
     "#{first_name} #{last_name}"
