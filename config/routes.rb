@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
-  get '/check_username_availability', to: 'users#check_username_availability'
+  post '/check_username_availability', to: 'users#check_username_availability'
 
   resources :categories
   resources :teams

@@ -93,6 +93,8 @@
       // Add email format validation logic here
       if (!isValidEmail(email)) {
         $('#email-status').text('Email format is invalid').removeClass('success').addClass('error');
+      } else {
+        $('#email-status').text('').removeClass('error').addClass('success');
       }
     } else {
       $('#email-status').empty();
@@ -110,7 +112,7 @@
   // Beautiful date picker for birth of date
   $('.datepicker').datepicker();
 
-  function updatePhoneNumberFields() {
+  $('#country-select').on('input', function() {
     var countryId = $('#country-select').val();
     if (countryId) {
       $.ajax({
@@ -129,16 +131,18 @@
       $('#phone-country-code').val('');
       // $('#phone-number-digits').attr('placeholder', 'Phone Number');
     }
-  }
+  });
 
-  function updateCitySelect() {
+  $('#country-select').on('input', function() {
     var countryId = $('#country-select').val();
+    console.log(countryId)
     if (countryId) {
       $.ajax({
         url: '/countries/' + countryId + '/cities', // Replace with your cities controller route
         method: 'GET',
         dataType: 'json',
         success: function(response) {
+          console.log(response)
           var options = '<option value="">Select a city</option>';
           if (response.length > 0) {
             response.forEach(function(city) {
@@ -153,7 +157,7 @@
     } else {
       $('#city-select').html('<option value="">Select a city</option>');
     }
-  }
+  });
 
   // Live check password confirmation
   $('#password-confirmation-field').on('input', function() {
@@ -162,21 +166,14 @@
     if (passwordConfirmation.length > 0) {
       if (!(passwordConfirmation === password)) {
         $('#password-confirmation-status').text('Passwords do not match').removeClass('success').addClass('error');
+      } else {
+        $('#password-confirmation-status').text('').removeClass('error').addClass('success');
       }
     } else {
       $('#password-confirmation-status').empty();
     }
   });
 
-  // Event listener for country select change
-  $('#country-select').on('change', function() {
-    updatePhoneNumberFields();
-    updateCitySelect();
-  });
-
-  // Initial update of phone number fields and city select on page load
-  updatePhoneNumberFields();
-  updateCitySelect();
 </script>
 <style>
   body {

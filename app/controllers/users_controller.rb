@@ -9,6 +9,7 @@ class UsersController < ApplicationController
   end
 
   def show
+    @user = User.find(params[:id])
   end
 
   def new
@@ -19,7 +20,10 @@ class UsersController < ApplicationController
   def create
     byebug
     @user = User.new(user_params)
-    @user.phone_number = "#{params[:user][:phone_number_country_code]}#{params[:user][:phone_number_digits]}"
+    phone_number = PhoneNumber.create(country_id: params[:user][:country_id])
+    phone_number.number = "#{params[:user][:phone_number_country_code]}#{params[:user][:phone_number_digits]}"
+    phone_number.user = @user
+    @user.phone_number = phone_number
     # store all emails in lowercase to avoid duplicates and case-sensitive login errors:
     @user.email.downcase!
 
@@ -35,9 +39,12 @@ class UsersController < ApplicationController
   end
 
   def edit
+    @user = User.find(params[:id])
   end
 
   def update
+    @user = User.find(params[:id])
+
     if @user.update(user_params)
       redirect_to @user, notice: 'User was successfully updated.'
     else
@@ -46,6 +53,7 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    @user = User.find(params[:id])
     @user.destroy
     redirect_to users_url, notice: 'User was successfully destroyed.'
   end
@@ -63,7 +71,7 @@ private
   def user_params
     # strong parameters - whitelist of allowed fields #=> permit(:name, :email, ...)
     # that can be submitted by a form to the user model #=> require(:user)
-    params.require(:user).permit(:first_name, :last_name, :username, :email, :date_of_birth, :country_id, :city_id, :password, :password_confirmation)
+    params.require(:user).permit(:first_name, :last_name, :username, :email, :date_of_birth, :gender, :phone_number_country_code, :phone_number_digits, :country_id, :city_id, :password, :password_confirmation)
   end
 
 # ----- end of added lines -----
