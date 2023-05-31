@@ -38,7 +38,7 @@ namespace :fill_missings_countries do
         end
       end
     end
-    json_file = File.read('/home/ariana/myProjects/TeamAct/lib/tasks/countries.json')
+    json_file = File.read('/home/alirezash/Projects/TeamAct/lib/tasks/countries.json')
     data = JSON.parse(json_file)
 
     i = 0

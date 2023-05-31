@@ -4,7 +4,7 @@ class CreateAddresses < ActiveRecord::Migration[7.0]
       t.text :description
       t.float :latitude
       t.float :longitude
-      t.belongs_to :user, null: false, foreign_key: true
+      t.belongs_to :user, null: false, foreign_key: { dependent: :destroy }
 
       t.timestamps
     end

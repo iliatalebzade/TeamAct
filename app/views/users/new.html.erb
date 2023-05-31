@@ -68,16 +68,18 @@
   $('#username-field').on('input', function() {
     var username = $(this).val();
     if (username.length > 0) {
+      var authenticityToken = $('meta[name="csrf-token"]').attr('content');
       $.ajax({
         url: '/check_username_availability', // Replace with the appropriate route to check username availability
         method: 'POST',
         dataType: 'json',
+        headers: { 'X-CSRF-Token': authenticityToken },
         data: { username: username },
         success: function(response) {
-          if (response.available) {
-            $('#username-status').text('Username is available').removeClass('error').addClass('success');
-          } else {
+          if (!response.available) {
             $('#username-status').text('This username is taken').removeClass('success').addClass('error');
+          } else {
+            $('#username-status').text('').removeClass('error').addClass('success');
           }
         }
       });
@@ -159,10 +161,9 @@
     }
   });
 
-  // Live check password confirmation
-  $('#password-confirmation-field').on('input', function() {
+  function live_check_password_confirmation() {
     var password = $('#password-field').val();
-    var passwordConfirmation = $(this).val();
+    var passwordConfirmation = $('#password-confirmation-field').val();
     if (passwordConfirmation.length > 0) {
       if (!(passwordConfirmation === password)) {
         $('#password-confirmation-status').text('Passwords do not match').removeClass('success').addClass('error');
@@ -172,6 +173,14 @@
     } else {
       $('#password-confirmation-status').empty();
     }
+  };
+
+  // Live check password confirmation
+  $('#password-confirmation-field').on('input', function() {
+    live_check_password_confirmation()
+  });
+  $('#password-field').on('input', function() {
+    live_check_password_confirmation()
   });
 
 </script>

@@ -1,4 +1,4 @@
 class RoleAccess < ApplicationRecord
-  belongs_to :role
-  belongs_to :access
+  belongs_to :role, dependent: :destroy
+  belongs_to :access, dependent: :destroy
 end

@@ -15,8 +15,8 @@ class User < ApplicationRecord
   belongs_to :role, class_name: 'Role'
   belongs_to :city
   has_one :country, through: :city
-  has_one :phone_number
-  has_many :addresses
+  has_one :phone_number, dependent: :destroy
+  has_many :addresses, dependent: :destroy
 
   def full_name
     "#{first_name} #{last_name}"

@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
 
+  protect_from_forgery with: :exception
   before_action :authorize, only: [:dashboard, :show, :edit, :update, :destroy]
 
   # ----- add these lines here: -----
@@ -18,20 +19,34 @@ class UsersController < ApplicationController
   end
 
   def create
-    byebug
     @user = User.new(user_params)
-    phone_number = PhoneNumber.create(country_id: params[:user][:country_id])
-    phone_number.number = "#{params[:user][:phone_number_country_code]}#{params[:user][:phone_number_digits]}"
-    phone_number.user = @user
-    @user.phone_number = phone_number
+    @user.role = Role.find(1) # admin for now
     # store all emails in lowercase to avoid duplicates and case-sensitive login errors:
     @user.email.downcase!
-
-    if @user.save
+    result = @user.save
+    if result
+      phone_number = PhoneNumber.new(number: "#{params[:user][:phone_number_country_code]}#{params[:user][:phone_number_digits]}")
+      phone_number.country = Country.find(params[:user][:country_id])
+      phone_number.user = @user
+      result = phone_number.save
+      puts result
+      if !result
+        if phone_number.errors.any?
+          phone_number.errors.full_messages.each do |message|
+            puts message
+          end
+        end
+      end
+      @user.phone_number = phone_number
       # If user saves in the db successfully:
       flash[:notice] = "Account created successfully!"
       redirect_to root_path
     else
+      if @user.errors.any?
+        @user.errors.full_messages.each do |message|
+          puts message
+        end
+      end
       # If user fails model validation - probably a bad password or duplicate email:
       flash.now.alert = "Oops, couldn't create account. Please make sure you are using a valid email and password and try again."
       render :new
@@ -63,7 +78,10 @@ class UsersController < ApplicationController
 
   def check_username_availability
     user = User.find_by(username: params[:username])
-    render json: {avaiable: user.present?}
+    respond_to do |format|
+      format.html
+      format.json { render json: {available: user.nil?} }
+    end
   end
 
 private
@@ -71,7 +89,12 @@ private
   def user_params
     # strong parameters - whitelist of allowed fields #=> permit(:name, :email, ...)
     # that can be submitted by a form to the user model #=> require(:user)
-    params.require(:user).permit(:first_name, :last_name, :username, :email, :date_of_birth, :gender, :phone_number_country_code, :phone_number_digits, :country_id, :city_id, :password, :password_confirmation)
+    parsed_params = params.require(:user).permit(:first_name, :last_name, :username, :email, :date_of_birth, :gender, :phone_number_country_code, :phone_number_digits, :country_id, :city_id, :password, :password_confirmation)
+
+    # Convert the date_of_birth parameter to the desired format
+    parsed_params[:date_of_birth] = Date.strptime(params[:user][:date_of_birth], "%m/%d/%Y")
+
+    parsed_params
   end
 
 # ----- end of added lines -----
