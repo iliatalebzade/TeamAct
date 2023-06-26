@@ -1,3 +1,3 @@
 class TeamRole < Role
-  belongs_to :team, dependent: :destroy
+  belongs_to :team
 end

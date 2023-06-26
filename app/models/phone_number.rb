@@ -1,5 +1,5 @@
 class PhoneNumber < ApplicationRecord
-  belongs_to :user, dependent: :destroy
+  belongs_to :user
   belongs_to :country
 
   validate :validate_phone_number
